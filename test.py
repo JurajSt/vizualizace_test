@@ -5,6 +5,7 @@ import csv
 import re
 import matplotlib.pyplot as plt
 import numpy as np
+import locale
 import datetime
 import arcpy
 
@@ -22,6 +23,7 @@ def csvReader(path):
             value_split = re.split(',|;|\t',
                                    value_re)  # znaky oddelovaca v csv subore , alebo ; alebo tab (medzera ako odelovac nepodporovany)
             data_split.append(value_split)
+    print data_split
     return data_split
 
 def runningMeanFast(x, N):
@@ -38,11 +40,10 @@ lon = map(float, sheet.column['LON'])
 #plt.show()
 
 print header
-
+locale.setlocale(locale.LC_ALL, 'english_united-states.437')  # nastevenie datumu
 dataHeader = []
 for d in header[12:]:
-    date = d.split('-')
-
+    date = datetime.datetime.strptime(d, '%d-%b-%Y')
     dataHeader.append(date)
 
 
@@ -50,19 +51,6 @@ for row in sheet.row:
 
     data = row[12:]
     elements = np.array(map(float, data))
-
-    """
-    mean = np.mean(elements, axis=0)
-    sd = np.std(elements, axis=0)
-    final_list = [x for x in data if (x > mean - 2 * sd)]
-    final_list = [x for x in final_list if (x < mean + 2 * sd)]
-    #plt.plot(dataHeader, map(float, data), 'o')
-    #plt.plot([dataHeader[0], dataHeader[-1]], [2 * sd, 2 * sd], 'r')
-    #plt.plot([dataHeader[0], dataHeader[-1]], [-2 * sd, -2 * sd], 'r')
-    plt.boxplot(elements)
-    plt.show()
-    plt.hist(elements)
-    plt.show()"""
     ma = runningMeanFast(elements, 10)
     plt.plot(dataHeader, ma)
     plt.show()
