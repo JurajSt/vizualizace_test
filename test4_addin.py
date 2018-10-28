@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import locale
 import datetime, time
-import os, math
+import os
+import math
 import scipy.signal as signal
 import matplotlib.dates as mdates
 
